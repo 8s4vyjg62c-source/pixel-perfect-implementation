@@ -82,8 +82,6 @@ function BilanBody({ state, period, prev, saveReview }: { state: BloomState; per
   }));
   const total = totalDone(state, period.start, period.end);
   const totalPrev = totalDone(state, prev.start, prev.end);
-  const victories = state.gratitude.filter((g) => g.date >= period.key.slice(0) && false); // placeholder unused
-  void victories;
   const gratitudeCount = state.gratitude.filter((g) => { const d = new Date(g.date + "T12:00"); return d >= period.start && d <= new Date(period.end.getTime() + 86399999); }).length;
 
   // Graphique d'évolution : sous-périodes
@@ -124,7 +122,7 @@ function BilanBody({ state, period, prev, saveReview }: { state: BloomState; per
         <p className="font-display text-4xl">{total}</p>
         <p className="mt-1 text-sm">
           {!hasPrev ? "Pas encore assez de données pour comparer avec la période précédente."
-            : totalPrev === 0 ? `Aucune action enregistrée ${UNIT[period.kind].replace("la ", "la ").replace(/^/, "pendant ")}.`
+            : totalPrev === 0 ? `Aucune action enregistrée pendant ${UNIT[period.kind]}.`
             : total > totalPrev ? `Contre ${totalPrev} ${UNIT[period.kind]}. Ça progresse.`
             : `Contre ${totalPrev} ${UNIT[period.kind]}.`}
           {gratitudeCount > 0 && ` · ${gratitudeCount} gratitude${gratitudeCount > 1 ? "s" : ""} notée${gratitudeCount > 1 ? "s" : ""}.`}
@@ -135,7 +133,7 @@ function BilanBody({ state, period, prev, saveReview }: { state: BloomState; per
         <h2 className="text-lg font-medium">Prévu et réalisé</h2>
         <p className="mb-4 flex gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1"><span className="h-2 w-4 rounded-full bg-primary" /> réalisé</span>
-          <span className="flex items-center gap-1"><span className="h-2 w-4 rounded-full bg-cocoa" /> {UNIT[period.kind].replace(/^(la|le|l')\s?/, "").replace("précédente", "préc.").replace("précédent", "préc.")}</span>
+          <span className="flex items-center gap-1"><span className="h-2 w-4 rounded-full bg-cocoa" /> période précédente</span>
         </p>
         {rows.length === 0 && <p className="text-sm text-muted-foreground">Aucune routine pour l'instant.</p>}
         <ul className="space-y-4">

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BilanRouteImport } from './routes/bilan'
 import { Route as GratitudeRouteImport } from './routes/gratitude'
 import { Route as InspirationRouteImport } from './routes/inspiration'
 import { Route as RoutinesRouteImport } from './routes/routines'
@@ -17,6 +18,11 @@ import { Route as RoutinesRouteImport } from './routes/routines'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BilanRoute = BilanRouteImport.update({
+  id: '/bilan',
+  path: '/bilan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GratitudeRoute = GratitudeRouteImport.update({
@@ -37,12 +43,14 @@ const RoutinesRoute = RoutinesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bilan': typeof BilanRoute
   '/gratitude': typeof GratitudeRoute
   '/inspiration': typeof InspirationRoute
   '/routines': typeof RoutinesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bilan': typeof BilanRoute
   '/gratitude': typeof GratitudeRoute
   '/inspiration': typeof InspirationRoute
   '/routines': typeof RoutinesRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bilan': typeof BilanRoute
   '/gratitude': typeof GratitudeRoute
   '/inspiration': typeof InspirationRoute
   '/routines': typeof RoutinesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gratitude' | '/inspiration' | '/routines'
+  fullPaths: '/' | '/bilan' | '/gratitude' | '/inspiration' | '/routines'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gratitude' | '/inspiration' | '/routines'
-  id: '__root__' | '/' | '/gratitude' | '/inspiration' | '/routines'
+  to: '/' | '/bilan' | '/gratitude' | '/inspiration' | '/routines'
+  id: '__root__' | '/' | '/bilan' | '/gratitude' | '/inspiration' | '/routines'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BilanRoute: typeof BilanRoute
   GratitudeRoute: typeof GratitudeRoute
   InspirationRoute: typeof InspirationRoute
   RoutinesRoute: typeof RoutinesRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bilan': {
+      id: '/bilan'
+      path: '/bilan'
+      fullPath: '/bilan'
+      preLoaderRoute: typeof BilanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gratitude': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BilanRoute: BilanRoute,
   GratitudeRoute: GratitudeRoute,
   InspirationRoute: InspirationRoute,
   RoutinesRoute: RoutinesRoute,
