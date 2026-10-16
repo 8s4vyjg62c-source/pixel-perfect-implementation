@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BilanRouteImport } from './routes/bilan'
 import { Route as GratitudeRouteImport } from './routes/gratitude'
+import { Route as HistoriqueRouteImport } from './routes/historique'
 import { Route as InspirationRouteImport } from './routes/inspiration'
+import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as RoutinesRouteImport } from './routes/routines'
 
 const IndexRoute = IndexRouteImport.update({
@@ -30,9 +32,19 @@ const GratitudeRoute = GratitudeRouteImport.update({
   path: '/gratitude',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoriqueRoute = HistoriqueRouteImport.update({
+  id: '/historique',
+  path: '/historique',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InspirationRoute = InspirationRouteImport.update({
   id: '/inspiration',
   path: '/inspiration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjetsRoute = ProjetsRouteImport.update({
+  id: '/projets',
+  path: '/projets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RoutinesRoute = RoutinesRouteImport.update({
@@ -45,14 +57,18 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bilan': typeof BilanRoute
   '/gratitude': typeof GratitudeRoute
+  '/historique': typeof HistoriqueRoute
   '/inspiration': typeof InspirationRoute
+  '/projets': typeof ProjetsRoute
   '/routines': typeof RoutinesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bilan': typeof BilanRoute
   '/gratitude': typeof GratitudeRoute
+  '/historique': typeof HistoriqueRoute
   '/inspiration': typeof InspirationRoute
+  '/projets': typeof ProjetsRoute
   '/routines': typeof RoutinesRoute
 }
 export interface FileRoutesById {
@@ -60,22 +76,48 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/bilan': typeof BilanRoute
   '/gratitude': typeof GratitudeRoute
+  '/historique': typeof HistoriqueRoute
   '/inspiration': typeof InspirationRoute
+  '/projets': typeof ProjetsRoute
   '/routines': typeof RoutinesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bilan' | '/gratitude' | '/inspiration' | '/routines'
+  fullPaths:
+    | '/'
+    | '/bilan'
+    | '/gratitude'
+    | '/historique'
+    | '/inspiration'
+    | '/projets'
+    | '/routines'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bilan' | '/gratitude' | '/inspiration' | '/routines'
-  id: '__root__' | '/' | '/bilan' | '/gratitude' | '/inspiration' | '/routines'
+  to:
+    | '/'
+    | '/bilan'
+    | '/gratitude'
+    | '/historique'
+    | '/inspiration'
+    | '/projets'
+    | '/routines'
+  id:
+    | '__root__'
+    | '/'
+    | '/bilan'
+    | '/gratitude'
+    | '/historique'
+    | '/inspiration'
+    | '/projets'
+    | '/routines'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BilanRoute: typeof BilanRoute
   GratitudeRoute: typeof GratitudeRoute
+  HistoriqueRoute: typeof HistoriqueRoute
   InspirationRoute: typeof InspirationRoute
+  ProjetsRoute: typeof ProjetsRoute
   RoutinesRoute: typeof RoutinesRoute
 }
 
@@ -102,11 +144,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GratitudeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/historique': {
+      id: '/historique'
+      path: '/historique'
+      fullPath: '/historique'
+      preLoaderRoute: typeof HistoriqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inspiration': {
       id: '/inspiration'
       path: '/inspiration'
       fullPath: '/inspiration'
       preLoaderRoute: typeof InspirationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projets': {
+      id: '/projets'
+      path: '/projets'
+      fullPath: '/projets'
+      preLoaderRoute: typeof ProjetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/routines': {
@@ -123,7 +179,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BilanRoute: BilanRoute,
   GratitudeRoute: GratitudeRoute,
+  HistoriqueRoute: HistoriqueRoute,
   InspirationRoute: InspirationRoute,
+  ProjetsRoute: ProjetsRoute,
   RoutinesRoute: RoutinesRoute,
 }
 export const routeTree = rootRouteImport
