@@ -24,7 +24,7 @@ export const dateKey = (d: Date = new Date()) => {
   return `${y}-${m}-${day}`;
 };
 export const fromKey = (k: string) => {
-  const [y, m, d] = k.split("-").map(Number);
+  const [y = 1970, m = 1, d = 1] = k.split("-").map(Number);
   return new Date(y, m - 1, d);
 };
 const uid = () => Math.random().toString(36).slice(2, 10);
