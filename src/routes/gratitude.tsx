@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { AppShell, Loading, PageHeader } from "@/components/bloom/AppShell";
@@ -24,7 +24,7 @@ function Gratitude() {
 
   return (
     <AppShell>
-      <PageHeader title="Ma gratitude" />
+      <PageHeader title="Ma gratitude"><Link to="/inspiration" className="mt-2 inline-block text-sm font-medium text-primary">Mon inspiration →</Link></PageHeader>
       {!state ? <Loading /> : (() => {
         const today = dateKey();
         const todays = state.gratitude.filter((g) => g.date === today);
