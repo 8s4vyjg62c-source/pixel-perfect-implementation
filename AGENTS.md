@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Bloom app state lives in `src/lib/bloom/store.ts` behind `useBloom()` (localStorage for the prototype); swap persistence there to add accounts/DB without touching screens.
