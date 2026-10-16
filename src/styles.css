@@ -33,37 +33,37 @@
   --color-ring: var(--ring);
   --color-sky: var(--sky);
   --color-powder: var(--powder);
-  --color-sage: var(--sage);
-  --color-sage-deep: var(--sage-deep);
+  --color-cocoa: var(--cocoa);
+  --color-cocoa-deep: var(--cocoa-deep);
   --color-plum: var(--plum);
 }
 
 :root {
   --radius: 1rem;
-  --background: oklch(0.966 0.008 75);      /* crème #F8F4EF */
-  --foreground: oklch(0.34 0.025 350);      /* prune #45363D */
-  --card: oklch(0.99 0.004 75);
-  --card-foreground: oklch(0.34 0.025 350);
-  --popover: oklch(0.99 0.004 75);
-  --popover-foreground: oklch(0.34 0.025 350);
-  --primary: oklch(0.49 0.16 3);            /* framboise #A72D55 */
+  --background: oklch(0.887 0.03 68);       /* beige crème #E9D8C7 */
+  --foreground: oklch(0.4 0.025 55);        /* brun cacao profond #55443B */
+  --card: oklch(0.955 0.014 70);
+  --card-foreground: oklch(0.4 0.025 55);
+  --popover: oklch(0.955 0.014 70);
+  --popover-foreground: oklch(0.4 0.025 55);
+  --primary: oklch(0.49 0.16 3);            /* rose framboise #A72D55 */
   --primary-foreground: oklch(0.985 0.005 75);
-  --secondary: oklch(0.92 0.03 240);        /* bleu ciel */
-  --secondary-foreground: oklch(0.34 0.025 350);
-  --muted: oklch(0.935 0.01 70);
-  --muted-foreground: oklch(0.5 0.025 350);
-  --accent: oklch(0.79 0.07 355);           /* rose poudré */
-  --accent-foreground: oklch(0.34 0.025 350);
+  --secondary: oklch(0.925 0.028 240);
+  --secondary-foreground: oklch(0.4 0.025 55);
+  --muted: oklch(0.85 0.03 65);
+  --muted-foreground: oklch(0.43 0.03 55);
+  --accent: oklch(0.79 0.07 355);
+  --accent-foreground: oklch(0.4 0.025 55);
   --destructive: oklch(0.49 0.16 3);
   --destructive-foreground: oklch(0.985 0.005 75);
-  --border: oklch(0.9 0.012 60);
-  --input: oklch(0.9 0.012 60);
+  --border: oklch(0.8 0.03 62);
+  --input: oklch(0.8 0.03 62);
   --ring: oklch(0.49 0.16 3);
-  --sky: oklch(0.925 0.028 240);            /* #D8EAF7 */
-  --powder: oklch(0.79 0.07 355);           /* #DCA6B7 */
-  --sage: oklch(0.8 0.03 145);              /* #B7C7B6 */
-  --sage-deep: oklch(0.52 0.05 145);
-  --plum: oklch(0.34 0.025 350);
+  --sky: oklch(0.925 0.028 240);            /* bleu ciel #D8EAF7 */
+  --powder: oklch(0.79 0.07 355);           /* rose poudré #DCA6B7 */
+  --cocoa: oklch(0.71 0.065 60);            /* cacao doux #C49B7B */
+  --cocoa-deep: oklch(0.47 0.06 55);        /* cacao foncé pour coches (contraste) */
+  --plum: oklch(0.4 0.025 55);
 }
 
 @layer base {

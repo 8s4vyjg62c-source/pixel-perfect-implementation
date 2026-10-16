@@ -23,11 +23,11 @@ const SUGGESTIONS = [
 ] as const;
 const DAYS = [[1, "L"], [2, "M"], [3, "M"], [4, "J"], [5, "V"], [6, "S"], [0, "D"]] as const;
 
-type Draft = { id?: string; name: string; emoji: string; frequency: Frequency };
+type Draft = { id?: string; name: string; emoji: string; frequency: Frequency; projectId?: string };
 const empty = (): Draft => ({ name: "", emoji: "🌱", frequency: { type: "daily" } });
 
 function Routines() {
-  const { state, toggle, addRoutine, updateRoutine, deleteRoutine } = useBloom();
+  const { state, toggle, addRoutine, updateRoutine, deleteRoutine, setReminders } = useBloom();
   const [draft, setDraft] = useState<Draft | null>(null);
   const today = new Date();
 
@@ -65,6 +65,24 @@ function Routines() {
           <button onClick={() => setDraft(empty())} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 font-medium text-primary-foreground transition-opacity hover:opacity-90">
             <Plus className="h-5 w-5" /> Ajouter une routine
           </button>
+          <section className="mt-6 space-y-3 rounded-2xl card-soft p-4">
+            <label className="flex items-center justify-between gap-3">
+              <span>
+                <span className="block font-medium">Suggestions douces</span>
+                <span className="block text-sm text-muted-foreground">Affichées dans l'application uniquement (pas de notifications).</span>
+              </span>
+              <input type="checkbox" role="switch" checked={state.reminders.enabled} onChange={(e) => setReminders({ ...state.reminders, enabled: e.target.checked })} className="h-5 w-9 accent-primary" />
+            </label>
+            {state.reminders.enabled && (
+              <label className="flex items-center gap-2 text-sm">
+                Proposer une reprise après
+                <input type="number" min={2} max={60} value={state.reminders.resumeAfterDays}
+                  onChange={(e) => setReminders({ ...state.reminders, resumeAfterDays: Math.max(2, Number(e.target.value) || 7) })}
+                  className="w-16 rounded-xl border bg-background p-2 text-center" />
+                jours sans activité
+              </label>
+            )}
+          </section>
         </div>
       )}
 
@@ -90,10 +108,10 @@ function Routines() {
             </div>
             <p className="mb-2 mt-5 text-sm font-medium">Fréquence</p>
             <div className="grid grid-cols-2 gap-2">
-              {([["daily", "Chaque jour"], ["weekdays", "Certains jours"], ["weekly", "Hebdomadaire"], ["custom", "Personnalisée"]] as const).map(([t, l]) => (
+              {([["daily", "Chaque jour"], ["weekdays", "Certains jours"], ["timesPerWeek", "Plusieurs fois / sem."], ["weekly", "Hebdomadaire"], ["custom", "Intervalle"]] as const).map(([t, l]) => (
                 <button
                   key={t}
-                  onClick={() => setDraft({ ...draft, frequency: t === "weekdays" ? { type: t, days: [1, 3, 5] } : t === "custom" ? { type: t, everyNDays: 2, startDate: dateKey() } : { type: t } })}
+                  onClick={() => setDraft({ ...draft, frequency: t === "weekdays" ? { type: t, days: [1, 3, 5] } : t === "custom" ? { type: t, everyNDays: 2, startDate: dateKey() } : t === "timesPerWeek" ? { type: t, times: 3 } : { type: t } })}
                   className={`rounded-xl border p-3 text-sm ${draft.frequency.type === t ? "border-primary bg-primary/10 text-primary" : ""}`}
                 >{l}</button>
               ))}
@@ -105,7 +123,7 @@ function Routines() {
                   const on = f.days.includes(d);
                   return (
                     <button key={d} aria-pressed={on} onClick={() => setDraft({ ...draft, frequency: { ...f, days: on ? f.days.filter((x) => x !== d) : [...f.days, d] } })}
-                      className={`h-10 w-10 rounded-full text-sm font-medium ${on ? "bg-sage-deep text-primary-foreground" : "bg-muted"}`}>{l}</button>
+                      className={`h-10 w-10 rounded-full text-sm font-medium ${on ? "bg-cocoa-deep text-primary-foreground" : "bg-muted"}`}>{l}</button>
                   );
                 })}
               </div>
@@ -117,6 +135,23 @@ function Routines() {
                   onChange={(e) => setDraft({ ...draft, frequency: { ...(draft.frequency as Extract<Frequency, { type: "custom" }>), everyNDays: Math.max(1, Number(e.target.value) || 1) } })}
                   className="w-16 rounded-xl border bg-background p-2 text-center" />
                 jours
+              </label>
+            )}
+            {draft.frequency.type === "timesPerWeek" && (
+              <label className="mt-3 flex items-center gap-2 text-sm">
+                <input type="number" min={2} max={6} value={draft.frequency.times}
+                  onChange={(e) => setDraft({ ...draft, frequency: { type: "timesPerWeek", times: Math.min(6, Math.max(2, Number(e.target.value) || 2)) } })}
+                  className="w-16 rounded-xl border bg-background p-2 text-center" />
+                fois par semaine, les jours de ton choix
+              </label>
+            )}
+            {state && state.projects.filter((p) => !p.archived).length > 0 && (
+              <label className="mt-5 block text-sm">
+                <span className="mb-2 block font-medium">Contribue à un projet (facultatif)</span>
+                <select value={draft.projectId ?? ""} onChange={(e) => setDraft({ ...draft, projectId: e.target.value || undefined })} className="w-full rounded-xl border bg-background p-3">
+                  <option value="">Aucun</option>
+                  {state.projects.filter((p) => !p.archived).map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+                </select>
               </label>
             )}
             <div className="mt-6 flex gap-2">

@@ -3,19 +3,43 @@ import { useEffect, useState, useCallback } from "react";
 export type Frequency =
   | { type: "daily" }
   | { type: "weekdays"; days: number[] } // 0 = dimanche
+  | { type: "timesPerWeek"; times: number } // plusieurs fois par semaine, jours libres
   | { type: "weekly" } // une fois par semaine, n'importe quel jour
   | { type: "custom"; everyNDays: number; startDate: string };
 
-export type Routine = { id: string; name: string; emoji: string; frequency: Frequency };
+export type Routine = { id: string; name: string; emoji: string; frequency: Frequency; projectId?: string };
 export type GratitudeEntry = { id: string; date: string; text: string };
+export type ProjectStatus = "idea" | "active" | "paused" | "done";
+export type ProjectStep = { id: string; text: string; done: boolean };
+export type Project = {
+  id: string;
+  title: string;
+  description?: string;
+  createdAt: string;
+  dueDate?: string;
+  status: ProjectStatus;
+  steps: ProjectStep[];
+  nextAction?: string;
+  note?: string;
+  archived?: boolean;
+};
+export type Review = { worked: string; learned: string; adjust: string; victory: string; gratitude: string };
+export type Reminders = { enabled: boolean; resumeAfterDays: number };
+
 export type BloomState = {
   routines: Routine[];
   completions: Record<string, string[]>; // dateKey -> routine ids
   gratitude: GratitudeEntry[];
   biblicalContent: boolean;
+  projects: Project[];
+  reviews: Record<string, Review>; // "week:YYYY-MM-DD" | "month:YYYY-MM" | "year:YYYY"
+  dayNotes: Record<string, string>;
+  reminders: Reminders;
 };
 
 const KEY = "bloom.v1";
+
+export const STATUS_LABEL: Record<ProjectStatus, string> = { idea: "Idée", active: "En cours", paused: "En pause", done: "Terminé" };
 
 export const dateKey = (d: Date = new Date()) => {
   const y = d.getFullYear();
@@ -27,7 +51,13 @@ export const fromKey = (k: string) => {
   const [y = 1970, m = 1, d = 1] = k.split("-").map(Number);
   return new Date(y, m - 1, d);
 };
-const uid = () => Math.random().toString(36).slice(2, 10);
+export const uid = () => Math.random().toString(36).slice(2, 10);
+
+export function startOfWeek(date: Date) {
+  const d = fromKey(dateKey(date));
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+  return d;
+}
 
 function daysAgo(n: number) {
   const d = new Date();
@@ -57,7 +87,33 @@ export function demoState(): BloomState {
       { id: uid(), date: daysAgo(3), text: "J'ai respecté un moment de repos." },
     ],
     biblicalContent: false,
+    projects: [],
+    reviews: {},
+    dayNotes: {},
+    reminders: { enabled: true, resumeAfterDays: 7 },
   };
+}
+
+/** Complète un état sauvegardé par une ancienne version sans perdre les données. */
+export function migrate(raw: Partial<BloomState>): BloomState {
+  return {
+    routines: raw.routines ?? [],
+    completions: raw.completions ?? {},
+    gratitude: raw.gratitude ?? [],
+    biblicalContent: raw.biblicalContent ?? false,
+    projects: raw.projects ?? [],
+    reviews: raw.reviews ?? {},
+    dayNotes: raw.dayNotes ?? {},
+    reminders: raw.reminders ?? { enabled: true, resumeAfterDays: 7 },
+  };
+}
+
+function doneThisWeekBefore(r: Routine, date: Date, state: BloomState) {
+  let n = 0;
+  for (let d = startOfWeek(date); d < fromKey(dateKey(date)); d.setDate(d.getDate() + 1)) {
+    if (state.completions[dateKey(d)]?.includes(r.id)) n++;
+  }
+  return n;
 }
 
 export function isScheduled(r: Routine, date: Date, state?: BloomState): boolean {
@@ -67,16 +123,11 @@ export function isScheduled(r: Routine, date: Date, state?: BloomState): boolean
       return true;
     case "weekdays":
       return f.days.includes(date.getDay());
-    case "weekly": {
-      // Visible tous les jours jusqu'à ce qu'elle soit faite dans la semaine
-      if (!state) return true;
-      const start = new Date(date);
-      start.setDate(date.getDate() - ((date.getDay() + 6) % 7));
-      for (let d = new Date(start); d < date; d.setDate(d.getDate() + 1)) {
-        if (state.completions[dateKey(d)]?.includes(r.id)) return false;
-      }
-      return true;
-    }
+    case "weekly":
+      // Visible chaque jour jusqu'à ce qu'elle soit faite dans la semaine
+      return !state || doneThisWeekBefore(r, date, state) < 1;
+    case "timesPerWeek":
+      return !state || doneThisWeekBefore(r, date, state) < f.times;
     case "custom": {
       const diff = Math.round((fromKey(dateKey(date)).getTime() - fromKey(f.startDate).getTime()) / 86400000);
       return diff >= 0 && diff % Math.max(1, f.everyNDays) === 0;
@@ -89,6 +140,7 @@ export function describeFrequency(f: Frequency): string {
   switch (f.type) {
     case "daily": return "Chaque jour";
     case "weekdays": return [1, 2, 3, 4, 5, 6, 0].filter((d) => f.days.includes(d)).map((d) => names[d]).join(" · ") || "Aucun jour";
+    case "timesPerWeek": return `${f.times} fois par semaine`;
     case "weekly": return "Une fois par semaine";
     case "custom": return f.everyNDays === 1 ? "Chaque jour" : `Tous les ${f.everyNDays} jours`;
   }
@@ -102,7 +154,7 @@ function load(): BloomState {
   if (state) return state;
   try {
     const raw = localStorage.getItem(KEY);
-    state = raw ? (JSON.parse(raw) as BloomState) : demoState();
+    state = raw ? migrate(JSON.parse(raw) as Partial<BloomState>) : demoState();
   } catch {
     state = demoState();
   }
@@ -135,10 +187,21 @@ export function useBloom() {
     addRoutine: (r: Omit<Routine, "id">) => update((p) => ({ ...p, routines: [...p.routines, { ...r, id: uid() }] })),
     updateRoutine: (r: Routine) => update((p) => ({ ...p, routines: p.routines.map((x) => (x.id === r.id ? r : x)) })),
     deleteRoutine: (id: string) => update((p) => ({ ...p, routines: p.routines.filter((x) => x.id !== id) })),
-    addGratitude: (text: string) =>
-      update((p) => ({ ...p, gratitude: [{ id: uid(), date: dateKey(), text }, ...p.gratitude] })),
+    addGratitude: (text: string, date = dateKey()) =>
+      update((p) => ({ ...p, gratitude: [{ id: uid(), date, text }, ...p.gratitude] })),
     deleteGratitude: (id: string) => update((p) => ({ ...p, gratitude: p.gratitude.filter((g) => g.id !== id) })),
     setBiblical: (v: boolean) => update((p) => ({ ...p, biblicalContent: v })),
+    saveProject: (pr: Project) =>
+      update((p) => ({ ...p, projects: p.projects.some((x) => x.id === pr.id) ? p.projects.map((x) => (x.id === pr.id ? pr : x)) : [pr, ...p.projects] })),
+    deleteProject: (id: string) =>
+      update((p) => ({
+        ...p,
+        projects: p.projects.filter((x) => x.id !== id),
+        routines: p.routines.map((r) => (r.projectId === id ? { ...r, projectId: undefined } : r)),
+      })),
+    saveReview: (key: string, r: Review) => update((p) => ({ ...p, reviews: { ...p.reviews, [key]: r } })),
+    setDayNote: (day: string, text: string) => update((p) => ({ ...p, dayNotes: { ...p.dayNotes, [day]: text } })),
+    setReminders: (r: Reminders) => update((p) => ({ ...p, reminders: r })),
     reset: () => save(demoState()),
   };
   return { state: s, ...actions };

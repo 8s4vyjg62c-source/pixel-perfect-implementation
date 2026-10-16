@@ -2,21 +2,24 @@ import { Check } from "lucide-react";
 import type { Routine } from "@/lib/bloom/store";
 import { describeFrequency } from "@/lib/bloom/store";
 
-export function RoutineCheck({ routine, done, onToggle }: { routine: Routine; done: boolean; onToggle: () => void }) {
+export function RoutineCheck({ routine, done, onToggle, projectTitle }: { routine: Routine; done: boolean; onToggle: () => void; projectTitle?: string }) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-pressed={done}
-      className={`flex w-full items-center gap-4 rounded-2xl p-4 text-left transition-colors ${done ? "bg-sage/45" : "card-soft"}`}
+      className={`flex w-full items-center gap-4 rounded-2xl p-4 text-left transition-colors ${done ? "bg-cocoa/35" : "card-soft"}`}
     >
       <span className="text-2xl" aria-hidden>{routine.emoji}</span>
       <span className="flex-1">
-        <span className={`block font-medium ${done ? "text-foreground/70" : "text-foreground"}`}>{routine.name}</span>
-        <span className="block text-xs text-muted-foreground">{describeFrequency(routine.frequency)}</span>
+        <span className="block font-medium text-foreground">{routine.name}</span>
+        <span className="block text-xs text-muted-foreground">
+          {describeFrequency(routine.frequency)}
+          {projectTitle && <> · contribue à « {projectTitle} »</>}
+        </span>
       </span>
       <span
-        className={`flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all ${done ? "pop border-sage-deep bg-sage-deep text-primary-foreground" : "border-border"}`}
+        className={`flex h-7 w-7 items-center justify-center rounded-full border-2 transition-all ${done ? "pop border-cocoa-deep bg-cocoa-deep text-primary-foreground" : "border-cocoa"}`}
       >
         {done && <Check className="h-4 w-4" strokeWidth={3} />}
       </span>
