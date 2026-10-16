@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { Sun, ListChecks, Sprout, Heart } from "lucide-react";
+import { Sun, ChartColumn, Lightbulb, CalendarDays } from "lucide-react";
 import type { ReactNode } from "react";
 
 const items = [
   { to: "/", label: "Aujourd'hui", icon: Sun },
-  { to: "/routines", label: "Mes routines", icon: ListChecks },
-  { to: "/evolution", label: "Mon évolution", icon: Sprout },
-  { to: "/gratitude", label: "Gratitude", icon: Heart },
+  { to: "/bilan", label: "Mon bilan", icon: ChartColumn },
+  { to: "/projets", label: "Mes projets", icon: Lightbulb },
+  { to: "/historique", label: "Historique", icon: CalendarDays },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
