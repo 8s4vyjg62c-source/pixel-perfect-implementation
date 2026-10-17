@@ -10,7 +10,11 @@ export type Frequency =
 export type Routine = { id: string; name: string; emoji: string; frequency: Frequency; projectId?: string | undefined };
 export type GratitudeEntry = { id: string; date: string; text: string };
 export type ProjectStatus = "idea" | "active" | "paused" | "done";
-export type ProjectStep = { id: string; text: string; done: boolean };
+export type ProjectStep = { id: string; text: string; done: boolean; completedAt?: string | undefined };
+export type Direction = { id: string; title: string; note?: string };
+export type ProjectLink = { id: string; from: string; to: string; note: string };
+export type SuggestionStatus = "useful" | "hidden" | "ignored";
+export type Profile = { name: string; goal: string; prompted: boolean };
 export type Project = {
   id: string;
   title: string;
@@ -22,6 +26,7 @@ export type Project = {
   nextAction?: string;
   note?: string;
   archived?: boolean;
+  history?: { date: string; text: string }[];
 };
 export type Review = { worked: string; learned: string; adjust: string; victory: string; gratitude: string };
 export type Reminders = { enabled: boolean; resumeAfterDays: number };
@@ -35,6 +40,13 @@ export type BloomState = {
   reviews: Record<string, Review>; // "week:YYYY-MM-DD" | "month:YYYY-MM" | "year:YYYY"
   dayNotes: Record<string, string>;
   reminders: Reminders;
+  directions: Direction[];
+  projectLinks: ProjectLink[];
+  mapPositions: Record<string, { x: number; y: number }>;
+  verseFavorites: string[];
+  verseNotes: Record<string, string>;
+  suggestionFeedback: Record<string, SuggestionStatus>;
+  profile: Profile;
 };
 
 const KEY = "bloom.v1";
@@ -91,6 +103,8 @@ export function demoState(): BloomState {
     reviews: {},
     dayNotes: {},
     reminders: { enabled: true, resumeAfterDays: 7 },
+    directions: [], projectLinks: [], mapPositions: {}, verseFavorites: [], verseNotes: {}, suggestionFeedback: {},
+    profile: { name: "", goal: "", prompted: false },
   };
 }
 
@@ -105,6 +119,13 @@ export function migrate(raw: Partial<BloomState>): BloomState {
     reviews: raw.reviews ?? {},
     dayNotes: raw.dayNotes ?? {},
     reminders: raw.reminders ?? { enabled: true, resumeAfterDays: 7 },
+    directions: raw.directions ?? [],
+    projectLinks: raw.projectLinks ?? [],
+    mapPositions: raw.mapPositions ?? {},
+    verseFavorites: raw.verseFavorites ?? [],
+    verseNotes: raw.verseNotes ?? {},
+    suggestionFeedback: raw.suggestionFeedback ?? {},
+    profile: { name: "", goal: "", prompted: false, ...raw.profile },
   };
 }
 
@@ -191,14 +212,43 @@ export function useBloom() {
       update((p) => ({ ...p, gratitude: [{ id: uid(), date, text }, ...p.gratitude] })),
     deleteGratitude: (id: string) => update((p) => ({ ...p, gratitude: p.gratitude.filter((g) => g.id !== id) })),
     setBiblical: (v: boolean) => update((p) => ({ ...p, biblicalContent: v })),
-    saveProject: (pr: Project) =>
-      update((p) => ({ ...p, projects: p.projects.some((x) => x.id === pr.id) ? p.projects.map((x) => (x.id === pr.id ? pr : x)) : [pr, ...p.projects] })),
+    saveProject: (pr: Project) => update((p) => {
+      const old = p.projects.find((x) => x.id === pr.id);
+      const changes: string[] = [];
+      if (!old) changes.push("Projet créé");
+      if (old && old.status !== pr.status) changes.push(`Statut : ${STATUS_LABEL[pr.status]}`);
+      if (old && old.title !== pr.title) changes.push("Titre modifié");
+      if (old && Boolean(old.archived) !== Boolean(pr.archived)) changes.push(pr.archived ? "Projet archivé" : "Projet désarchivé");
+      const steps = pr.steps.map((s) => {
+        const before = old?.steps.find((x) => x.id === s.id);
+        if (s.done && !before?.done) changes.push(`Étape terminée : ${s.text}`);
+        if (!s.done && before?.done) changes.push(`Étape remise à faire : ${s.text}`);
+        return { ...s, completedAt: s.done ? before?.completedAt ?? (before?.done ? undefined : dateKey()) : undefined };
+      });
+      const next = { ...pr, steps, history: [...(old?.history ?? []), ...changes.map((text) => ({ date: dateKey(), text }))] };
+      return { ...p, projects: old ? p.projects.map((x) => x.id === pr.id ? next : x) : [next, ...p.projects] };
+    }),
     deleteProject: (id: string) =>
       update((p) => ({
         ...p,
         projects: p.projects.filter((x) => x.id !== id),
         routines: p.routines.map((r) => (r.projectId === id ? { ...r, projectId: undefined } : r)),
+        projectLinks: p.projectLinks.filter((l) => l.from !== id && l.to !== id),
       })),
+    saveDirection: (d: Direction) => update((p) => ({ ...p, directions: p.directions.some((x) => x.id === d.id) ? p.directions.map((x) => x.id === d.id ? d : x) : [...p.directions, d] })),
+    deleteDirection: (id: string) => update((p) => ({ ...p, directions: p.directions.filter((d) => d.id !== id), projectLinks: p.projectLinks.filter((l) => l.from !== id && l.to !== id) })),
+    saveProjectLink: (link: ProjectLink) => update((p) => {
+      const ids = new Set([...p.projects, ...p.directions].map((x) => x.id));
+      if (link.from === link.to || !ids.has(link.from) || !ids.has(link.to)) return p;
+      if (p.projectLinks.some((l) => l.id !== link.id && ((l.from === link.from && l.to === link.to) || (l.from === link.to && l.to === link.from)))) return p;
+      return { ...p, projectLinks: p.projectLinks.some((l) => l.id === link.id) ? p.projectLinks.map((l) => l.id === link.id ? link : l) : [...p.projectLinks, link] };
+    }),
+    deleteProjectLink: (id: string) => update((p) => ({ ...p, projectLinks: p.projectLinks.filter((l) => l.id !== id) })),
+    setMapPosition: (id: string, position: { x: number; y: number }) => update((p) => ({ ...p, mapPositions: { ...p.mapPositions, [id]: position } })),
+    setProfile: (profile: Profile) => update((p) => ({ ...p, profile })),
+    toggleVerseFavorite: (id: string) => update((p) => ({ ...p, verseFavorites: p.verseFavorites.includes(id) ? p.verseFavorites.filter((x) => x !== id) : [...p.verseFavorites, id] })),
+    setVerseNote: (id: string, note: string) => update((p) => ({ ...p, verseNotes: { ...p.verseNotes, [id]: note } })),
+    setSuggestionFeedback: (id: string, status: SuggestionStatus) => update((p) => ({ ...p, suggestionFeedback: { ...p.suggestionFeedback, [id]: status } })),
     saveReview: (key: string, r: Review) => update((p) => ({ ...p, reviews: { ...p.reviews, [key]: r } })),
     setDayNote: (day: string, text: string) => update((p) => ({ ...p, dayNotes: { ...p.dayNotes, [day]: text } })),
     setReminders: (r: Reminders) => update((p) => ({ ...p, reminders: r })),

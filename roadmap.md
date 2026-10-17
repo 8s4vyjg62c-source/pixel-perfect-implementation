@@ -1,0 +1,6 @@
+- [ ] Étendre les données sans perdre les sauvegardes.
+- [ ] Ajouter la carte et la gestion explicite des liens.
+- [ ] Vérifier et intégrer les versets, favoris et notes.
+- [ ] Ajouter des pistes locales explicables et leur suivi.
+- [ ] Ajouter le profil facultatif et l'accueil personnalisé.
+- [ ] Tester les parcours et les écrans mobile et ordinateur.
