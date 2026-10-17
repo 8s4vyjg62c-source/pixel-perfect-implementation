@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import type { Routine } from "@/lib/bloom/store";
 import { describeFrequency } from "@/lib/bloom/store";
 
-export function RoutineCheck({ routine, done, onToggle, projectTitle }: { routine: Routine; done: boolean; onToggle: () => void; projectTitle?: string }) {
+export function RoutineCheck({ routine, done, onToggle, projectTitle }: { routine: Routine; done: boolean; onToggle: () => void; projectTitle?: string | undefined }) {
   return (
     <button
       type="button"

@@ -51,7 +51,7 @@ function Bilan() {
       </div>
       <div className="mb-6 flex items-center justify-between">
         <button aria-label="Période précédente" onClick={() => setOffset(offset - 1)} className="rounded-full p-2 hover:bg-card"><ChevronLeft className="h-5 w-5" /></button>
-        <p className="text-center font-medium capitalize">{period.label}{offset === 0 && <span className="block text-xs font-normal normal-case text-muted-foreground">période en cours</span>}</p>
+        <p className="text-center font-medium first-letter:uppercase">{period.label}{offset === 0 && <span className="block text-xs font-normal normal-case text-muted-foreground">période en cours</span>}</p>
         <button aria-label="Période suivante" disabled={offset >= 0} onClick={() => setOffset(offset + 1)} className="rounded-full p-2 hover:bg-card disabled:opacity-30"><ChevronRight className="h-5 w-5" /></button>
       </div>
       {!state ? <Loading /> : <BilanBody key={period.key} state={state} period={period} prev={prev} saveReview={saveReview} />}

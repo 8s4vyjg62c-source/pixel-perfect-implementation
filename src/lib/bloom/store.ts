@@ -7,7 +7,7 @@ export type Frequency =
   | { type: "weekly" } // une fois par semaine, n'importe quel jour
   | { type: "custom"; everyNDays: number; startDate: string };
 
-export type Routine = { id: string; name: string; emoji: string; frequency: Frequency; projectId?: string };
+export type Routine = { id: string; name: string; emoji: string; frequency: Frequency; projectId?: string | undefined };
 export type GratitudeEntry = { id: string; date: string; text: string };
 export type ProjectStatus = "idea" | "active" | "paused" | "done";
 export type ProjectStep = { id: string; text: string; done: boolean };
@@ -16,7 +16,7 @@ export type Project = {
   title: string;
   description?: string;
   createdAt: string;
-  dueDate?: string;
+  dueDate?: string | undefined;
   status: ProjectStatus;
   steps: ProjectStep[];
   nextAction?: string;
