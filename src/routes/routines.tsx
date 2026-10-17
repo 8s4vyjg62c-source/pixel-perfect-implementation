@@ -23,7 +23,7 @@ const SUGGESTIONS = [
 ] as const;
 const DAYS = [[1, "L"], [2, "M"], [3, "M"], [4, "J"], [5, "V"], [6, "S"], [0, "D"]] as const;
 
-type Draft = { id?: string; name: string; emoji: string; frequency: Frequency; projectId?: string };
+type Draft = { id?: string; name: string; emoji: string; frequency: Frequency; projectId?: string | undefined };
 const empty = (): Draft => ({ name: "", emoji: "🌱", frequency: { type: "daily" } });
 
 function Routines() {
