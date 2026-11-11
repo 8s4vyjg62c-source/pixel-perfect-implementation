@@ -79,6 +79,7 @@ function Today() {
               )}
 
               <div className="grid gap-3">
+                <Link to="/mon-monde" className="flex items-center justify-between rounded-2xl bg-sky p-4"><span className="font-medium">Mon monde</span><ChevronRight className="h-4 w-4" /></Link>
                 <Link to="/gratitude" className="flex items-center gap-4 rounded-2xl bg-powder/60 p-4">
                   <Heart className="h-5 w-5 text-primary" />
                   <span className="flex-1">

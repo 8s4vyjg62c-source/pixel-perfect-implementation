@@ -9,9 +9,9 @@ const items = [
   { to: "/historique", label: "Historique", icon: CalendarDays },
 ] as const;
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-background">
+    <div className={`mx-auto min-h-screen bg-background ${wide ? "max-w-7xl" : "max-w-md"}`}>
       <main className="px-5 pb-28 pt-8">{children}</main>
       <nav aria-label="Navigation principale" className="fixed inset-x-0 bottom-0 z-20 border-t bg-card/95 backdrop-blur">
         <ul className="mx-auto grid max-w-md grid-cols-4">

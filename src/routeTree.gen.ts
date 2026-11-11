@@ -14,6 +14,7 @@ import { Route as BilanRouteImport } from './routes/bilan'
 import { Route as GratitudeRouteImport } from './routes/gratitude'
 import { Route as HistoriqueRouteImport } from './routes/historique'
 import { Route as InspirationRouteImport } from './routes/inspiration'
+import { Route as MonMondeRouteImport } from './routes/mon-monde'
 import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as RoutinesRouteImport } from './routes/routines'
 
@@ -42,6 +43,11 @@ const InspirationRoute = InspirationRouteImport.update({
   path: '/inspiration',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MonMondeRoute = MonMondeRouteImport.update({
+  id: '/mon-monde',
+  path: '/mon-monde',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjetsRoute = ProjetsRouteImport.update({
   id: '/projets',
   path: '/projets',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/gratitude': typeof GratitudeRoute
   '/historique': typeof HistoriqueRoute
   '/inspiration': typeof InspirationRoute
+  '/mon-monde': typeof MonMondeRoute
   '/projets': typeof ProjetsRoute
   '/routines': typeof RoutinesRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/gratitude': typeof GratitudeRoute
   '/historique': typeof HistoriqueRoute
   '/inspiration': typeof InspirationRoute
+  '/mon-monde': typeof MonMondeRoute
   '/projets': typeof ProjetsRoute
   '/routines': typeof RoutinesRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/gratitude': typeof GratitudeRoute
   '/historique': typeof HistoriqueRoute
   '/inspiration': typeof InspirationRoute
+  '/mon-monde': typeof MonMondeRoute
   '/projets': typeof ProjetsRoute
   '/routines': typeof RoutinesRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/gratitude'
     | '/historique'
     | '/inspiration'
+    | '/mon-monde'
     | '/projets'
     | '/routines'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/gratitude'
     | '/historique'
     | '/inspiration'
+    | '/mon-monde'
     | '/projets'
     | '/routines'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/gratitude'
     | '/historique'
     | '/inspiration'
+    | '/mon-monde'
     | '/projets'
     | '/routines'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   GratitudeRoute: typeof GratitudeRoute
   HistoriqueRoute: typeof HistoriqueRoute
   InspirationRoute: typeof InspirationRoute
+  MonMondeRoute: typeof MonMondeRoute
   ProjetsRoute: typeof ProjetsRoute
   RoutinesRoute: typeof RoutinesRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InspirationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mon-monde': {
+      id: '/mon-monde'
+      path: '/mon-monde'
+      fullPath: '/mon-monde'
+      preLoaderRoute: typeof MonMondeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projets': {
       id: '/projets'
       path: '/projets'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   GratitudeRoute: GratitudeRoute,
   HistoriqueRoute: HistoriqueRoute,
   InspirationRoute: InspirationRoute,
+  MonMondeRoute: MonMondeRoute,
   ProjetsRoute: ProjetsRoute,
   RoutinesRoute: RoutinesRoute,
 }

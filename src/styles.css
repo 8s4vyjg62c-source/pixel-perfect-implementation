@@ -36,6 +36,12 @@
   --color-cocoa: var(--cocoa);
   --color-cocoa-deep: var(--cocoa-deep);
   --color-plum: var(--plum);
+  --color-world-ocean: var(--world-ocean);
+  --color-world-land: var(--world-land);
+  --color-world-line: var(--world-line);
+  --color-world-realized: var(--world-realized);
+  --color-world-planned: var(--world-planned);
+  --color-world-wish: var(--world-wish);
 }
 
 :root {
@@ -64,6 +70,12 @@
   --cocoa: oklch(0.71 0.065 60);            /* cacao doux #C49B7B */
   --cocoa-deep: oklch(0.47 0.06 55);        /* cacao foncé pour coches (contraste) */
   --plum: oklch(0.4 0.025 55);
+  --world-ocean: oklch(0.943 0.02 80);
+  --world-land: oklch(0.84 0.026 73);
+  --world-line: oklch(0.70 0.035 65);
+  --world-realized: oklch(0.61 0.06 145);
+  --world-planned: oklch(0.60 0.09 43);
+  --world-wish: oklch(0.66 0.08 82);
 }
 
 @layer base {
@@ -94,3 +106,9 @@
   0% { transform: scale(0.8); } 60% { transform: scale(1.12); } 100% { transform: scale(1); }
 }
 @utility pop { animation: pop 0.3s ease-out; }
+
+.world-map .react-transform-wrapper { width: 100%; height: 100%; }
+.world-map .react-transform-component { width: 100%; height: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .pop { animation: none; }
+}
