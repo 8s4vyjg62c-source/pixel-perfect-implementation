@@ -50,7 +50,7 @@ function MonMonde() {
       <div className="mb-4 flex flex-wrap gap-2" aria-label="Continents"><Button variant={continent === "all" ? "secondary" : "ghost"} className="rounded-full" onClick={() => { setContinent("all"); setSelected(undefined); }}><Globe2 />Le monde</Button>{continents.map(c => <Button key={c} size="sm" className="rounded-full" variant={continent === c ? "secondary" : "ghost"} aria-pressed={continent === c} onClick={() => { setContinent(c); setSelected(undefined); }}>{c}</Button>)}</div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <section className="min-w-0">
-          <div className="world-map relative aspect-[1.65] min-h-64 overflow-hidden rounded-2xl border border-world-line/30 bg-world-ocean md:aspect-[1.7]">
+          <div className="world-map relative h-64 w-full overflow-hidden rounded-2xl border border-world-line/30 bg-world-ocean md:h-auto md:aspect-[1.7]">
             <TransformWrapper minScale={1} maxScale={8} wheel={{ step: 0.08 }} doubleClick={{ disabled: true }}>
               {({ zoomIn, zoomOut, resetTransform }) => <>
                 <TransformComponent><svg viewBox="0 0 1000 565" className="h-full w-full" aria-label="Planisphère des pays" role="group">
