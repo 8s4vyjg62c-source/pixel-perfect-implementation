@@ -27,6 +27,11 @@ export type Project = {
   note?: string;
   archived?: boolean;
   history?: { date: string; text: string }[];
+  location?: string;
+  geography?: { country: string; region?: string };
+  worldStatus?: "realized" | "planned" | "wish";
+  worldDate?: string;
+  photo?: string;
 };
 export type Review = { worked: string; learned: string; adjust: string; victory: string; gratitude: string };
 export type Reminders = { enabled: boolean; resumeAfterDays: number };

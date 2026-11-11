@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, X, Trash2, Archive, Check } from "lucide-react";
 import { AppShell, Loading, PageHeader } from "@/components/bloom/AppShell";
 import { dateKey, STATUS_LABEL, uid, useBloom, type Project, type ProjectStatus } from "@/lib/bloom/store";
+import { GeographyFields } from "@/components/bloom/GeographyFields";
 
 export const Route = createFileRoute("/projets")({
   head: () => ({
@@ -51,6 +52,7 @@ function Projets() {
       <PageHeader title="Mes projets">
         <p className="mt-2 text-sm text-muted-foreground">Ce que je souhaite construire, un petit pas après l'autre.</p>
       </PageHeader>
+      <Link to="/mon-monde" className="mb-5 flex items-center justify-between rounded-2xl bg-sky p-4 text-sm">Mon monde <span aria-hidden>↗</span></Link>
       {!state ? <Loading /> : (() => {
         const list = state.projects.filter((p) => filter === "archived" ? p.archived : !p.archived && (filter === "all" || p.status === filter));
         return (
@@ -145,6 +147,7 @@ function Projets() {
                 <input type="date" value={draft.dueDate ?? ""} onChange={(e) => setDraft({ ...draft, dueDate: e.target.value || undefined })} className="w-full rounded-xl border bg-background p-3" />
               </label>
               <textarea aria-label="Note" rows={2} placeholder="Note personnelle (facultatif)" value={draft.note ?? ""} onChange={(e) => setDraft({ ...draft, note: e.target.value })} className="w-full resize-none rounded-xl border bg-background p-3 text-sm" />
+              <GeographyFields project={draft} onChange={setDraft} />
               <p className="text-xs text-muted-foreground">Créé le {new Date(draft.createdAt + "T12:00").toLocaleDateString("fr-FR")}. Pour relier une routine, ouvre-la depuis « Gérer mes routines ».</p>
             </div>
             <div className="mt-6 flex gap-2">
