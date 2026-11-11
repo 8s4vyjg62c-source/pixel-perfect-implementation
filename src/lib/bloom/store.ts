@@ -28,8 +28,8 @@ export type Project = {
   archived?: boolean;
   history?: { date: string; text: string }[];
   location?: string;
-  geography?: { country: string; region?: string };
-  worldStatus?: "realized" | "planned" | "wish";
+  geography?: { country: string; region?: string } | undefined;
+  worldStatus?: "realized" | "planned" | "wish" | undefined;
   worldDate?: string;
   photo?: string;
 };
