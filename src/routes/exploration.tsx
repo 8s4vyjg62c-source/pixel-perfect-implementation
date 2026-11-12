@@ -1,0 +1,60 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { ArrowUpRight, TreeDeciduous, Waves, Home, Route as Path, SlidersHorizontal, X, Expand, Flower2, Check, Moon, MoveLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ConceptShell } from "@/components/exploration/ConceptShell";
+import eclosion from "@/assets/interieur-eclosion.jpg";
+import horizon from "@/assets/interieur-horizon.jpg";
+import serenite from "@/assets/interieur-serenite.jpg";
+import early from "@/assets/interieur-premiers-reperes.jpg";
+
+export const Route = createFileRoute("/exploration")({
+  head: () => ({ meta: [
+    { title: "Laëori — Mon monde intérieur, exploration" },
+    { name: "description", content: "Une exploration contemplative du monde intérieur de Laëori, sans score ni obligation." },
+    { property: "og:title", content: "Laëori — Mon monde intérieur" },
+    { property: "og:description", content: "Trois interprétations visuelles d’un monde personnel et vivant." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
+  ] }), component: InnerWorld,
+});
+const ambiances = [{name:"Éclosion", image:eclosion, tone:"bg-powder", description:"Délicate & chaleureuse"}, {name:"Horizon", image:horizon, tone:"bg-cocoa", description:"Lumineuse & solaire"}, {name:"Sérénité", image:serenite, tone:"bg-sky", description:"Minérale & apaisante"}];
+const zones = [
+  {name:"Mes racines", icon:TreeDeciduous, crop:"scene-roots", placement:"pin-roots", description:"Ce qui m’ancre", detail:"Les valeurs, les convictions et les prises de conscience qui trouvent leur place, au fil du chemin.", contributions:["Valeurs", "Apprentissages", "Spiritualité, si je le souhaite"]},
+  {name:"Le fil de l’eau", icon:Waves, crop:"scene-water", placement:"pin-water", description:"Ce qui m’apaise", detail:"Une eau paisible pour les attentions à soi, les moments de calme et la gratitude. Rien à remplir, rien à atteindre.", contributions:["Gratitude", "Hydratation", "Moments de paix"]},
+  {name:"Mon refuge", icon:Home, crop:"scene-refuge", placement:"pin-refuge", description:"Le droit de me reposer", detail:"Un lieu qui reste accueillant, même pendant une pause. Le sommeil peut y trouver un écho symbolique, sans être nécessaire.", contributions:["Repos", "Soins personnels", "Sommeil facultatif"]},
+  {name:"Mes horizons", icon:Path, crop:"scene-path", placement:"pin-path", description:"Ce qui s’ouvre à moi", detail:"Un chemin pour les expériences, les petits pas et les épreuves traversées. Il n’y a pas de destination imposée.", contributions:["Mouvement", "Lecture", "Expériences vécues"]},
+];
+
+function InnerWorld() {
+  const [theme, setTheme] = useState(0);
+  const [tab, setTab] = useState("Contempler");
+  const [zone, setZone] = useState<number>();
+  const [personalize, setPersonalize] = useState(false);
+  const [name, setName] = useState("Mon monde intérieur");
+  const [refuge, setRefuge] = useState(true);
+  const [chapter, setChapter] = useState(1);
+  const [expanded, setExpanded] = useState(false);
+  const ambiance = ambiances[theme] ?? ambiances[0];
+  const activeZone = zone === undefined ? undefined : zones[zone];
+  const scene = tab === "Au fil du temps" && chapter === 0 ? early : ambiance.image;
+  return <ConceptShell>
+    <main className="mx-auto max-w-7xl px-5 pb-12 pt-8 md:px-10">
+      <div className="mb-7 flex flex-wrap items-end justify-between gap-5"><div><p className="mb-2 text-xs uppercase tracking-widest text-muted-foreground">Un paysage à soi</p><h1 className="text-3xl md:text-5xl">{name || "Mon monde intérieur"}</h1><p className="mt-3 text-sm text-muted-foreground">Tout ce qui grandit en toi n’a pas besoin de se voir tout de suite.</p></div><Button variant="outline" onClick={() => setPersonalize(true)}><SlidersHorizontal />Personnaliser</Button></div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4"><div role="tablist" aria-label="Vues du monde intérieur" className="flex gap-1 border-b">{["Contempler", "Les lieux", "Au fil du temps"].map(t => <Button key={t} role="tab" aria-selected={tab === t} variant="ghost" className={tab === t ? "border-b-2 border-primary rounded-none text-primary" : "rounded-none"} onClick={() => {setTab(t);setZone(undefined);}}>{t}</Button>)}</div><div className="flex gap-1" aria-label="Ambiances">{ambiances.map((a,i) => <Button key={a.name} size="sm" variant={theme === i ? "secondary" : "ghost"} aria-pressed={theme === i} onClick={() => setTheme(i)}><span className={`h-2.5 w-2.5 rounded-full ${a.tone}`} />{a.name}</Button>)}</div></div>
+      <section aria-label="Paysage du monde intérieur" className={expanded ? "scene-expanded" : "relative"}>
+        <div className={`inner-scene relative overflow-hidden ${activeZone ? activeZone.crop : ""} ${!refuge ? "scene-without-refuge" : ""}`}>
+          <img src={scene} alt={`Paysage ${ambiance.name} : arbre aux racines visibles, eau paisible, chemin et refuge`} width={1536} height={1024} className="scene-image h-full w-full object-cover" />
+          {!activeZone && zones.filter(z => refuge || z.name !== "Mon refuge").map(z => {const Icon = z.icon;return <Button key={z.name} variant="outline" className={`scene-pin ${z.placement} bg-card/90`} onClick={() => setZone(zones.indexOf(z))}><Icon /><span>{z.name}</span></Button>;})}
+          <div className="absolute right-4 top-4"><Button size="icon" variant="secondary" title={expanded ? "Réduire la vue" : "Voir en grand"} aria-label={expanded ? "Réduire la vue" : "Voir en grand"} onClick={() => setExpanded(!expanded)}>{expanded ? <X /> : <Expand />}</Button></div>
+          {activeZone && <Button variant="secondary" className="absolute left-4 top-4" onClick={() => setZone(undefined)}><MoveLeft />Vue d’ensemble</Button>}
+          <div className="absolute bottom-0 left-0 right-0 bg-card/90 px-5 py-4 md:flex md:items-center md:justify-between"><p className="font-display text-lg">{activeZone ? activeZone.name : "Ici, rien n’est à prouver."}</p><p className="mt-1 text-xs text-muted-foreground md:mt-0">{activeZone ? activeZone.description : "Un monde qui t’accueille, même les jours de pause."}</p></div>
+        </div>
+      </section>
+      <p className="mt-3 text-xs text-muted-foreground">{theme === 0 ? "Éclosion · Couleurs issues du projet, illustration proposée." : `${ambiance.name} · Interprétation provisoire ; palette officielle non disponible dans ce projet.`}</p>
+      {activeZone && <section className="mt-7 grid gap-5 border-b pb-7 md:grid-cols-2"><div><p className="text-xs uppercase tracking-widest text-muted-foreground">Un écho de mon cheminement</p><h2 className="mt-2 text-2xl">{activeZone.name}</h2><p className="mt-3 max-w-lg text-sm leading-relaxed">{activeZone.detail}</p></div><div><p className="mb-3 text-sm text-muted-foreground">Ce qui pourrait y trouver sa place</p><ul className="space-y-2 text-sm">{activeZone.contributions.map(c => <li key={c} className="flex items-center gap-2"><Flower2 className="h-4 w-4 text-cocoa-deep" />{c}</li>)}</ul>{zone === 2 && <Button asChild variant="link" className="mt-4 px-0"><Link to="/sommeil"><Moon />Retrouver Mon sommeil<ArrowUpRight /></Link></Button>}</div></section>}
+      {tab === "Au fil du temps" ? <section className="mt-7"><div className="flex flex-wrap justify-between gap-4"><h2 className="text-2xl">Un chemin, pas une course</h2><span className="text-xs text-muted-foreground">Séquence illustrative · Pas ton historique personnel</span></div><div className="mt-5 grid gap-4 sm:grid-cols-3">{["Les premiers repères", "Des liens qui prennent forme", "Une pause, tout reste"].map((c,i) => <Button key={c} variant={chapter === i ? "secondary" : "outline"} className="h-auto justify-start whitespace-normal py-4" aria-pressed={chapter === i} onClick={() => setChapter(i)}><span className="font-display text-xl">0{i+1}</span>{c}</Button>)}</div><p className="mt-4 text-sm text-muted-foreground">{chapter === 0 ? "Un arbre, un peu d’eau, un chemin : un paysage déjà accueillant." : chapter === 1 ? "Des expériences pourraient enrichir le paysage. Les règles restent à imaginer ensemble." : "Le même paysage demeure. Une interruption ne retire rien à ce qui a grandi."}</p></section> : <section className="mt-8"><div className="mb-5 flex items-baseline justify-between"><h2 className="text-2xl">Les lieux qui me ressemblent</h2><span className="hidden text-xs text-muted-foreground sm:block">Un seul monde, plusieurs dimensions</span></div><div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{zones.map((z,i) => {const Icon=z.icon;return <Button key={z.name} variant="ghost" className="group h-auto flex-col items-start gap-3 whitespace-normal rounded-lg border bg-card p-3 text-left" onClick={() => setZone(i)}><div className={`zone-thumbnail w-full overflow-hidden ${z.crop}`}><img src={ambiance.image} alt="" width={1536} height={1024} loading="lazy" className="h-full w-full object-cover" /></div><span className="flex w-full items-center justify-between"><span className="flex items-center gap-2"><Icon className="text-cocoa-deep" />{z.name}</span><ArrowUpRight /></span><span className="text-xs text-muted-foreground">{z.description}</span></Button>;})}</div></section>}
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t pt-6"><p className="font-display text-xl">L’invisible aussi te fait grandir.</p><Button asChild variant="link"><Link to="/sommeil"><Moon />Un espace pour mon repos<ArrowUpRight /></Link></Button></div>
+    </main>
+    {personalize && <div className="fixed inset-0 z-50 flex justify-end bg-plum/40" onClick={() => setPersonalize(false)}><section role="dialog" aria-modal="true" aria-label="Personnaliser mon monde" className="h-full w-full max-w-md overflow-y-auto bg-card p-6" onClick={e => e.stopPropagation()}><div className="flex items-center justify-between"><h2 className="text-2xl">À ma manière</h2><Button variant="ghost" size="icon" aria-label="Fermer" onClick={() => setPersonalize(false)}><X /></Button></div><p className="mt-3 text-xs text-muted-foreground">Aperçu temporaire · Rien n’est enregistré</p><label className="mt-7 block text-sm">Le nom de mon monde<input value={name} maxLength={60} onChange={e => setName(e.target.value)} className="mt-2 w-full rounded-lg border bg-background p-3" /></label><h3 className="mb-3 mt-7 text-lg">Mon ambiance</h3><div className="space-y-3">{ambiances.map((a,i) => <Button key={a.name} variant="outline" className="h-auto w-full justify-start gap-4 p-2" onClick={() => setTheme(i)} aria-pressed={theme === i}><img src={a.image} alt="" width={1536} height={1024} className="h-16 w-24 rounded object-cover" /><span className="flex-1 text-left">{a.name}<span className="mt-1 block text-xs text-muted-foreground">{a.description}</span></span>{theme === i && <Check />}</Button>)}</div><h3 className="mt-7 text-lg">Un refuge dans mon paysage</h3><label className="mt-3 flex items-center gap-3 text-sm"><input type="checkbox" checked={refuge} onChange={e => setRefuge(e.target.checked)} className="accent-primary" />Afficher le refuge</label><p className="mt-4 text-xs leading-relaxed text-muted-foreground">Horizon et Sérénité sont des pistes visuelles, pas de nouvelles palettes officielles.</p><Button className="mt-7 w-full" onClick={() => setPersonalize(false)}>Retrouver mon paysage</Button></section></div>}
+  </ConceptShell>;
+}

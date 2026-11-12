@@ -15,3 +15,4 @@
 - Mon monde derives geographic views from existing projects; optional geography stays on the source record to prevent duplicate personal lists.
 - World outlines and country lookup are bundled from Natural Earth; regenerate projected paths from its public-domain country data rather than relying on online tiles.
 - Geographic dates represent occurrence/intention or existing plan deadlines, never creation dates; idea and paused statuses must not be automatically interpreted as wishes.
+- Visual concept pages live separately at /exploration and /sommeil with temporary React state only; never import the Bloom store there, so explorations cannot mutate personal records.

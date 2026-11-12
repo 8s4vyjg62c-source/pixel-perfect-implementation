@@ -1,4 +1,9 @@
-## Mon monde — demande actuelle
+## Exploration visuelle — suspendue à la demande de l’utilisatrice
+- [ ] Créer une maquette séparée avec trois interprétations, zones, évolution et personnalisation.
+- [ ] Créer la maquette indépendante du sommeil, sans enregistrer de données.
+- [ ] Vérifier les interactions et les formats téléphone et ordinateur, sans publier.
+
+## Mon monde — demande précédente
 - [x] Confirmer le projet de référence : continuer ici sur les projets présents ; aucun Collage à recréer.
 - [x] Ajouter le planisphère embarqué, les pays et continents, les filtres et les deux périodes.
 - [x] Relier la localisation aux fiches existantes sans duplication ni perte de données.

@@ -1,0 +1,43 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { Moon, Sun, CloudMoon, ArrowUpRight, Heart, Check, Waves } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ConceptShell } from "@/components/exploration/ConceptShell";
+import { sleepMinutes } from "@/lib/exploration/sleep";
+import landscape from "@/assets/interieur-serenite.jpg";
+
+export const Route = createFileRoute("/sommeil")({ head: () => ({meta: [
+  {title:"Laëori — Mon sommeil, exploration"},
+  {name:"description", content:"Maquette d’un espace de repos facultatif : ressentis, nuits et horaires, sans objectif ni diagnostic."},
+  {property:"og:title", content:"Laëori — Mon sommeil"},
+  {property:"og:description", content:"Explorer un suivi du sommeil doux, indépendant du monde intérieur."},
+  {property:"og:type", content:"website"}, {name:"twitter:card", content:"summary_large_image"},
+]}), component: SleepConcept });
+const examples = [{day:"Lun.", bed:"23:15", wake:"07:10", feeling:"Paisible"}, {day:"Mar.",bed:"00:00",wake:"07:30",feeling:"Encore fatiguée"}, {day:"Mer.",bed:"22:45",wake:"07:00",feeling:"Reposée"}, {day:"Jeu.",bed:"",wake:"",feeling:"Besoin de repos"}, {day:"Ven.",bed:"23:30",wake:"08:00",feeling:"Paisible"}];
+function SleepConcept() {
+  const [mode,setMode] = useState("Rapide");
+  const [duration,setDuration] = useState("7");
+  const [feeling,setFeeling] = useState("");
+  const [quality,setQuality] = useState("");
+  const [bed,setBed] = useState("");
+  const [wake,setWake] = useState("");
+  const [saved,setSaved] = useState(false);
+  const [history,setHistory] = useState("Ressentis");
+  const minutes = sleepMinutes(bed,wake);
+  return <ConceptShell sleep><main className="mx-auto max-w-6xl px-5 py-9 md:px-10">
+    <header className="mb-8"><p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground"><Moon className="h-4 w-4" />Un temps pour moi</p><h1 className="text-4xl md:text-5xl">Mon sommeil</h1><p className="mt-3 text-sm text-muted-foreground">Écouter mon repos, sans rien avoir à réussir.</p></header>
+    <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+      <section><div className="mb-5 flex items-center justify-between"><h2 className="text-2xl">Ma dernière nuit</h2><span className="text-xs text-muted-foreground">Saisie de maquette</span></div><div className="mb-6 flex flex-wrap gap-1 border-b" role="tablist" aria-label="Type de saisie">{["Rapide","Détaillé","Juste du repos"].map(m => <Button key={m} role="tab" aria-selected={mode === m} variant="ghost" className={mode === m ? "rounded-none border-b-2 border-primary text-primary" : "rounded-none"} onClick={() => {setMode(m);setSaved(false);}}>{m}</Button>)}</div>
+      <form onSubmit={e => {e.preventDefault();setSaved(true);}} className="space-y-6">
+        {mode === "Rapide" && <label className="block text-sm">Durée approximative<div className="mt-3 flex items-center gap-4"><input aria-label="Durée approximative en heures" type="range" min="0" max="14" step="0.5" value={duration} onChange={e => {setDuration(e.target.value);setSaved(false);}} className="w-full accent-primary" /><output className="w-16 shrink-0 text-right font-display text-xl">{duration.replace(".",",")} h</output></div></label>}
+        {mode === "Détaillé" && <><div className="grid grid-cols-2 gap-4"><label className="text-sm">Heure du coucher<input aria-label="Heure du coucher" type="time" value={bed} onChange={e => {setBed(e.target.value);setSaved(false);}} className="mt-2 w-full min-w-0 rounded-lg border bg-card p-3" /></label><label className="text-sm">Heure du réveil<input aria-label="Heure du réveil" type="time" value={wake} onChange={e => {setWake(e.target.value);setSaved(false);}} className="mt-2 w-full min-w-0 rounded-lg border bg-card p-3" /></label></div><p className="flex items-center gap-2 text-sm"><Moon className="h-4 w-4" />{minutes === undefined ? "Horaires facultatifs" : `${Math.floor(minutes/60)} h ${String(minutes%60).padStart(2,"0")} entre le coucher et le réveil`}</p><label className="block text-sm">Réveils nocturnes éventuels<input aria-label="Réveils nocturnes éventuels" placeholder="Par exemple : deux réveils, environ 20 minutes…" className="mt-2 w-full rounded-lg border bg-card p-3" /></label></>}
+        {mode === "Juste du repos" ? <div className="border-l-2 border-powder py-3 pl-4"><Heart className="mb-3 h-5 w-5 text-primary" /><h3 className="text-xl">J’ai eu besoin de repos.</h3><p className="mt-2 text-sm text-muted-foreground">Et cela suffit. Pas besoin de renseigner des horaires.</p></div> : <><fieldset><legend className="mb-3 text-sm">Mon ressenti au réveil</legend><div className="flex flex-wrap gap-2">{["Reposée","Paisible","Encore fatiguée","Difficile à dire"].map((f,i) => {const Icon=[Sun,Waves,CloudMoon,Moon][i] ?? Moon;return <Button type="button" key={f} variant={feeling === f ? "secondary" : "outline"} aria-pressed={feeling === f} onClick={() => {setFeeling(f === feeling ? "" : f);setSaved(false);}}><Icon />{f}</Button>;})}</div></fieldset><fieldset><legend className="mb-3 text-sm">Comment était ma nuit ?</legend><div className="flex flex-wrap gap-2">{["Douce","Entrecoupée","Agitée","Je ne sais pas"].map(q => <Button type="button" key={q} variant={quality === q ? "secondary" : "outline"} aria-pressed={quality === q} onClick={() => {setQuality(quality === q ? "" : q);setSaved(false);}}>{q}</Button>)}</div></fieldset></>}
+        <label className="block text-sm">Quelques mots, si j’en ai envie<textarea aria-label="Commentaire facultatif" rows={3} className="mt-2 w-full rounded-lg border bg-card p-3" placeholder="Ce dont j’ai besoin aujourd’hui…" /></label>
+        <Button type="submit"><Check />Prévisualiser ma note</Button>{saved && <p role="status" className="border-l-2 border-cocoa pl-3 text-sm">{mode === "Juste du repos" ? "J’ai eu besoin de repos." : `${mode === "Rapide" ? `${duration.replace(".",",")} h environ` : minutes === undefined ? "Horaires non renseignés" : `${Math.floor(minutes/60)} h ${minutes%60}`} · ${feeling || "Ressenti non renseigné"}${quality ? ` · ${quality}` : ""}`}<span className="mt-1 block text-xs text-muted-foreground">Aperçu seulement · Cette note n’est pas enregistrée.</span></p>}
+        <p className="text-xs leading-relaxed text-muted-foreground">Tout est facultatif. Les horaires indiquent un intervalle, pas le temps réellement dormi. Aucun suivi des phases ni diagnostic.</p>
+      </form></section>
+      <aside className="border-t pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0"><p className="text-xs uppercase tracking-widest text-muted-foreground">Dans mon monde intérieur</p><h2 className="mb-4 mt-2 text-2xl">Un écho de mon repos</h2><div className="zone-thumbnail scene-refuge h-60 overflow-hidden"><img src={landscape} alt="Un refuge minéral dans un paysage paisible" width={1536} height={1024} className="h-full w-full object-cover" /></div><p className="mt-4 text-sm leading-relaxed text-muted-foreground">Un refuge toujours là. Mon repos pourrait y trouver une place symbolique, mais mon monde n’a pas besoin d’un suivi du sommeil pour exister.</p><Button asChild variant="link" className="mt-3 px-0"><Link to="/exploration">Retrouver mon monde<ArrowUpRight /></Link></Button></aside>
+    </div>
+    <section className="mt-12 border-t pt-7"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-2xl">Les nuits, à leur rythme</h2><span className="text-xs text-muted-foreground">Exemples fictifs · Pas tes données</span></div><div className="my-5 flex gap-2">{["Ressentis","Horaires"].map(h => <Button key={h} variant={history === h ? "secondary" : "ghost"} aria-pressed={history === h} onClick={() => setHistory(h)}>{h}</Button>)}</div><div className="grid grid-cols-1 gap-3 sm:grid-cols-5">{examples.map(e => <article key={e.day} className="rounded-lg border bg-card p-4"><p className="text-xs text-muted-foreground">{e.day}</p>{history === "Ressentis" ? <><Moon className="my-4 h-5 w-5 text-cocoa-deep" /><p className="text-sm">{e.feeling}</p></> : <><p className="mt-3 text-sm">{e.bed ? `${e.bed} → ${e.wake}` : "Sans horaires"}</p>{e.bed && <div className="mt-4 h-1.5 bg-sky"><div className={`h-full bg-cocoa ${e.day === "Mer." ? "w-full" : e.day === "Mar." ? "w-3/4" : "w-5/6"}`} /></div>}<p className="mt-3 text-xs text-muted-foreground">{e.bed ? "Coucher et réveil" : "Besoin de repos"}</p></>}</article>)}</div></section>
+  </main></ConceptShell>;
+}
