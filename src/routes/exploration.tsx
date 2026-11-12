@@ -17,7 +17,7 @@ export const Route = createFileRoute("/exploration")({
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
   ] }), component: InnerWorld,
 });
-const ambiances = [{name:"Éclosion", image:eclosion, tone:"bg-powder", description:"Délicate & chaleureuse"}, {name:"Horizon", image:horizon, tone:"bg-cocoa", description:"Lumineuse & solaire"}, {name:"Sérénité", image:serenite, tone:"bg-sky", description:"Minérale & apaisante"}];
+const ambiances = [{name:"Éclosion", image:eclosion, tone:"bg-powder", description:"Délicate & chaleureuse"}, {name:"Horizon", image:horizon, tone:"bg-cocoa", description:"Lumineuse & solaire"}, {name:"Sérénité", image:serenite, tone:"bg-sky", description:"Minérale & apaisante"}] as const;
 const zones = [
   {name:"Mes racines", icon:TreeDeciduous, crop:"scene-roots", placement:"pin-roots", description:"Ce qui m’ancre", detail:"Les valeurs, les convictions et les prises de conscience qui trouvent leur place, au fil du chemin.", contributions:["Valeurs", "Apprentissages", "Spiritualité, si je le souhaite"]},
   {name:"Le fil de l’eau", icon:Waves, crop:"scene-water", placement:"pin-water", description:"Ce qui m’apaise", detail:"Une eau paisible pour les attentions à soi, les moments de calme et la gratitude. Rien à remplir, rien à atteindre.", contributions:["Gratitude", "Hydratation", "Moments de paix"]},
