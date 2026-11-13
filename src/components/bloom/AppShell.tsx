@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Sun, ChartColumn, Lightbulb, CalendarDays } from "lucide-react";
+import { Sun, ChartColumn, Lightbulb, CalendarDays, Compass, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { ReactNode } from "react";
 
 const items = [
@@ -12,7 +13,8 @@ const items = [
 export function AppShell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   return (
     <div className={`mx-auto min-h-screen bg-background ${wide ? "max-w-7xl" : "max-w-md"}`}>
-      <main className="px-5 pb-28 pt-8">{children}</main>
+      <nav aria-label="Espaces personnels" className="flex flex-wrap justify-end gap-1 px-5 pt-3"><Button asChild variant="ghost" size="sm"><Link to="/exploration"><Compass />Mon monde intérieur</Link></Button><Button asChild variant="ghost" size="sm"><Link to="/sommeil"><Moon />Mon sommeil</Link></Button></nav>
+      <main className="px-5 pb-28 pt-5">{children}</main>
       <nav aria-label="Navigation principale" className="fixed inset-x-0 bottom-0 z-20 border-t bg-card/95 backdrop-blur">
         <ul className="mx-auto grid max-w-md grid-cols-4">
           {items.map(({ to, label, icon: Icon }) => (

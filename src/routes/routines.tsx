@@ -8,10 +8,12 @@ import { dateKey, isScheduled, useBloom, type Frequency, type Routine } from "@/
 export const Route = createFileRoute("/routines")({
   head: () => ({
     meta: [
-      { title: "Bloom — Mes routines" },
+      { title: "Laëori — Mes routines" },
       { name: "description", content: "Crée et ajuste des routines facultatives, à ta mesure." },
-      { property: "og:title", content: "Bloom — Mes routines" },
+      { property: "og:title", content: "Laëori — Mes routines" },
       { property: "og:description", content: "Crée et ajuste des routines facultatives, à ta mesure." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Routines,

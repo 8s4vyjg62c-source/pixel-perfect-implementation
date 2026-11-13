@@ -8,10 +8,12 @@ import { doneCount, getPeriod, hasDataBefore, plannedCount, totalDone, type Peri
 export const Route = createFileRoute("/bilan")({
   head: () => ({
     meta: [
-      { title: "Bloom — Mon bilan" },
+      { title: "Laëori — Mon bilan" },
       { name: "description", content: "Ce que j'avais prévu, ce que j'ai réalisé, et ce que je retiens." },
-      { property: "og:title", content: "Bloom — Mon bilan" },
+      { property: "og:title", content: "Laëori — Mon bilan" },
       { property: "og:description", content: "Ce que j'avais prévu, ce que j'ai réalisé, et ce que je retiens." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Bilan,

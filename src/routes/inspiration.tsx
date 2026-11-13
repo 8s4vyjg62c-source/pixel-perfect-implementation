@@ -6,10 +6,12 @@ import { useBloom } from "@/lib/bloom/store";
 export const Route = createFileRoute("/inspiration")({
   head: () => ({
     meta: [
-      { title: "Bloom — Mon inspiration" },
+      { title: "Laëori — Mon inspiration" },
       { name: "description", content: "Un espace facultatif de pensées encourageantes." },
-      { property: "og:title", content: "Bloom — Mon inspiration" },
+      { property: "og:title", content: "Laëori — Mon inspiration" },
       { property: "og:description", content: "Un espace facultatif de pensées encourageantes." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Inspiration,

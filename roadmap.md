@@ -1,7 +1,9 @@
-## Exploration visuelle — suspendue à la demande de l’utilisatrice
-- [ ] Créer une maquette séparée avec trois interprétations, zones, évolution et personnalisation.
-- [ ] Créer la maquette indépendante du sommeil, sans enregistrer de données.
-- [ ] Vérifier les interactions et les formats téléphone et ordinateur, sans publier.
+## Monde intérieur — prototype intégré, demande actuelle
+- [x] Intégrer les accès au monde intérieur et au sommeil sans remplacer la navigation actuelle.
+- [x] Finaliser les zones explorables et la personnalisation du paysage.
+- [x] Rendre la saisie et l’historique du sommeil fonctionnels dans une session de démonstration isolée.
+- [x] Vérifier les interactions et les formats téléphone et ordinateur, sans publier.
+- [ ] Respecter les palettes officielles Horizon et Sérénité : valeurs absentes du projet, à fournir.
 
 ## Mon monde — demande précédente
 - [x] Confirmer le projet de référence : continuer ici sur les projets présents ; aucun Collage à recréer.

@@ -8,10 +8,12 @@ import { GeographyFields } from "@/components/bloom/GeographyFields";
 export const Route = createFileRoute("/projets")({
   head: () => ({
     meta: [
-      { title: "Bloom — Mes projets" },
+      { title: "Laëori — Mes projets" },
       { name: "description", content: "Tes projets et idées, leurs étapes et ton prochain petit pas." },
-      { property: "og:title", content: "Bloom — Mes projets" },
+      { property: "og:title", content: "Laëori — Mes projets" },
       { property: "og:description", content: "Tes projets et idées, leurs étapes et ton prochain petit pas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Projets,

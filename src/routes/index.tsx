@@ -9,10 +9,12 @@ import { dailyMessage, nudges } from "@/lib/bloom/motivation";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Bloom — Aujourd'hui" },
+      { title: "Laëori — Aujourd'hui" },
       { name: "description", content: "Tes routines du jour, à ton rythme, sans culpabilité." },
-      { property: "og:title", content: "Bloom — Aujourd'hui" },
+      { property: "og:title", content: "Laëori — Aujourd'hui" },
       { property: "og:description", content: "Tes routines du jour, à ton rythme, sans culpabilité." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Today,

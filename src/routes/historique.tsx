@@ -7,10 +7,12 @@ import { dateKey, fromKey, isScheduled, useBloom, type BloomState } from "@/lib/
 export const Route = createFileRoute("/historique")({
   head: () => ({
     meta: [
-      { title: "Bloom — Mon historique" },
+      { title: "Laëori — Mon historique" },
       { name: "description", content: "Parcours tes journées passées et retrouve tes petites victoires." },
-      { property: "og:title", content: "Bloom — Mon historique" },
+      { property: "og:title", content: "Laëori — Mon historique" },
       { property: "og:description", content: "Parcours tes journées passées et retrouve tes petites victoires." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Historique,

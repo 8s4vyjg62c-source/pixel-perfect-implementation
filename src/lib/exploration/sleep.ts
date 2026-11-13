@@ -1,4 +1,5 @@
-/** Time-only mock calculation, no storage or health interpretation. */
+export type SleepEntry = { id: string; date: string; mode: string; minutes: number | undefined; bed: string; wake: string; feeling: string; quality: string; awakenings: string; comment: string };
+/** Time-only calculation, no storage or health interpretation. */
 export function sleepMinutes(bed: string, wake: string): number | undefined {
   if (!/^\d{2}:\d{2}$/.test(bed) || !/^\d{2}:\d{2}$/.test(wake)) return undefined;
   const [bh, bm] = bed.split(":").map(Number);

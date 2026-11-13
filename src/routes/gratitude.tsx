@@ -7,10 +7,12 @@ import { dateKey, isScheduled, useBloom } from "@/lib/bloom/store";
 export const Route = createFileRoute("/gratitude")({
   head: () => ({
     meta: [
-      { title: "Bloom — Ma gratitude" },
+      { title: "Laëori — Ma gratitude" },
       { name: "description", content: "Note une à trois petites victoires du jour." },
-      { property: "og:title", content: "Bloom — Ma gratitude" },
+      { property: "og:title", content: "Laëori — Ma gratitude" },
       { property: "og:description", content: "Note une à trois petites victoires du jour." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Gratitude,
